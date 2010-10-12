@@ -20,3 +20,8 @@ character name and character code.
 record, defaulting to the 1v1 record of the last requested character.
 
 	$request->get_bracket_data();
+
+## TODO
+* Add support for batch requests
+* Add other helper functions for processing returned data
+* Add documentation somewhere for the returned object structure
