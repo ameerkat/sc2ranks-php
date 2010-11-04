@@ -1,6 +1,6 @@
 # sc2ranks-php
 ## Description
-A Simple PHP API for accessing data from [sc2ranks](http://www.sc2ranks.com/).
+A Simple PHP API for accessing data from [sc2ranks](http://www.sc2ranks.com/). Still needs some work, let me know if you have any contributions to this project.
 
 ## Usage
 See example.php for sample script
