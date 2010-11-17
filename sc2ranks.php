@@ -56,6 +56,15 @@
 		 * @var string
 		 */
 		private $site_address = "http://sc2ranks.com/api/base/teams/";
+		
+		/**
+		 * The base address for profile requests. Currently
+		 * http://sc2ranks.com/api/psearch/
+		 * @access private
+		 * @var string
+		 */
+		private $profile_search_address = "http://sc2ranks.com/api/psearch/";
+		
 		/**
 		 * Whether or not json errors are enabled, available in php 5.3.0
 		 * or greater.
@@ -121,6 +130,92 @@
 				}
 			}
 		}
+		
+		/**
+		 * Returns the deserialized character data object from the info
+		 * provided to the function.
+		 * @param string $name character name
+		 * @param string $subtype the subtype of the profile search; division, points, etc.
+		 * @param string $value the value corresponding to the subtype; Thor Xi, 1700, etc.
+		 * @param string $type optional type information, defaults to 1v1 team
+		 * @param string $region optional region information, defaults to US
+		 * @return object the deserialized character data
+		 */		
+		
+		public function get_character_data_by_profile($name, $subtype, $value, $type = "1t", $region = "us"){
+			$request_url = $this->profile_search_address.
+							rawurlencode($region)."/".
+							rawurlencode($name)."/".
+							rawurlencode($type)."/".
+							rawurlencode($subtype)."/".
+							rawurlencode($value).
+							".json?appKey=".$this->request_site_key;
+			$this->last_request = $request_url;
+			$response = file_get_contents($request_url);
+			$response_object = json_decode($response);
+			if ($this->json_errors_enabled){
+				$json_error = json_last_error();
+				if ($json_error == JSON_ERROR_NONE){
+					$this->last_json_error = $json_error;
+					$this->last_response = $response_object;
+					return $response_object;
+				} else {
+					$this->last_json_error = $json_error;
+					$this->last_response = null;
+					return null;
+				}
+			}
+			else {
+				if ($response_object == null){
+					$this->last_response = null;
+					return null;
+				} else {
+					$this->last_response = $response_object;
+					return $response_object;
+				}
+			}
+		}
+		
+		/**
+		 * Returns the deserialized character data object from the info
+		 * provided to the function.
+		 * @param string $name character name
+		 * @param string|int $bnet bnet ID code
+		 * @param string $region optional region information, defaults to US
+		 * @return object the deserialized character data
+		 */
+		public function get_character_data_by_bnet($name, $bnet, $region = "us"){
+			$request_url = $this->site_address.
+							rawurlencode($region)."/".
+							rawurlencode($name)."!".
+							rawurlencode($bnet).
+							".json?appKey=".$this->request_site_key;
+			$this->last_request = $request_url;
+			$response = file_get_contents($request_url);
+			$response_object = json_decode($response);
+			if ($this->json_errors_enabled){
+				$json_error = json_last_error();
+				if ($json_error == JSON_ERROR_NONE){
+					$this->last_json_error = $json_error;
+					$this->last_response = $response_object;
+					return $response_object;
+				} else {
+					$this->last_json_error = $json_error;
+					$this->last_response = null;
+					return null;
+				}
+			}
+			else {
+				if ($response_object == null){
+					$this->last_response = null;
+					return null;
+				} else {
+					$this->last_response = $response_object;
+					return $response_object;
+				}
+			}
+		}		
+				
 		
 		/**
 		 * Returns the team ranking object for a particular bracket.
