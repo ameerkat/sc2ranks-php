@@ -1,4 +1,8 @@
 <?php
+/**
+ * PHPUnit Tests
+ */
+ 
 require('sc2ranks.php');
 
 $request = new sc2ranks_request("github.com/ameerkat/sc2ranks-php");
@@ -93,6 +97,7 @@ class SC2RanksTest extends PHPUnit_Framework_TestCase
 		$this->assertObjectHasAttribute('is_random', $record);
 		$this->assertObjectHasAttribute('bracket', $record);
 		$this->assertObjectHasAttribute('region_rank', $record);
+		$data_old = $data;
 		
 		global $request;
 		$data = $request->get_character_data("HuK", 530);
@@ -101,6 +106,8 @@ class SC2RanksTest extends PHPUnit_Framework_TestCase
 		$this->assertObjectHasAttribute('error', $request->last_response());
 		$record = $request->get_bracket_data();
 		$this->assertNull($record);
+		$record_old = $request->get_bracket_data($data_old);
+		$this->assertTrue($record_old != null);
 	}
 }
 ?>
