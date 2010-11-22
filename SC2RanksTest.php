@@ -20,14 +20,14 @@ class SC2RanksTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($request->last_response()->name, "meerkat");
 		$this->assertFalse(isset($request->last_response()->error));
 		if($request->is_json_last_error_enabled())
-			$this->assertNull($request->json_last_error());
+			$this->assertEquals(JSON_ERROR_NONE);
 		$data = $request->get_character_data("HuK", 530);
 		$this->assertTrue($request != null);
 		$this->assertTrue($data != null);
 		// We are assuming this doesn't work
 		$this->assertObjectHasAttribute('error', $request->last_response());
 		if($request->is_json_last_error_enabled())
-			$this->assertNull($request->json_last_error());
+			$this->assertEquals(JSON_ERROR_NONE);
 		// Check that the response get's cleared
 		$data = $request->get_character_data("meerkat", 678);
 		$this->assertTrue($request != null);
@@ -36,7 +36,7 @@ class SC2RanksTest extends PHPUnit_Framework_TestCase
 		$this->assertFalse(isset($request->last_response()->error));
 		$this->assertEquals($request->last_response()->name, "meerkat");
 		if($request->is_json_last_error_enabled())
-			$this->assertNull($request->json_last_error());
+			$this->assertEquals(JSON_ERROR_NONE);
 			
 		// We are assuming this doesn't work
 		$data = $request->get_character_data("", 0);
@@ -44,13 +44,13 @@ class SC2RanksTest extends PHPUnit_Framework_TestCase
 		$this->assertTrue($data != null);
 		$this->assertObjectHasAttribute('error', $request->last_response());
 		if($request->is_json_last_error_enabled())
-			$this->assertNull($request->json_last_error());			
+			$this->assertEquals(JSON_ERROR_NONE);
 		$data = $request->get_character_data("", -1);
 		$this->assertTrue($request != null);
 		$this->assertTrue($data != null);
 		$this->assertObjectHasAttribute('error', $request->last_response());
 		if($request->is_json_last_error_enabled())
-			$this->assertNull($request->json_last_error());
+			$this->assertEquals(JSON_ERROR_NONE);
 
 		$data = $request->get_character_data("meerkat", 678);
 		$this->assertTrue($request != null);
@@ -59,7 +59,7 @@ class SC2RanksTest extends PHPUnit_Framework_TestCase
 		$this->assertFalse(isset($request->last_response()->error));
 		$this->assertEquals($request->last_response()->name, "meerkat");
 		if($request->is_json_last_error_enabled())
-			$this->assertNull($request->json_last_error());
+			$this->assertEquals(JSON_ERROR_NONE);
 		
 		// THIS BREAKS THE PROGRAM
 		// TODO Fix this
@@ -73,17 +73,19 @@ class SC2RanksTest extends PHPUnit_Framework_TestCase
 		$this->assertTrue($data != null);
 		$this->assertObjectHasAttribute('error', $request->last_response());
 		if($request->is_json_last_error_enabled())
-			$this->assertNull($request->json_last_error());
+			$this->assertEquals(JSON_ERROR_NONE);
     }
 	*/
 	
+	/*
 	public function testGetBracketData(){
 		global $request;
 		$data = $request->get_character_data("meerkat", 678);
 		$this->assertTrue($request != null);
 		$this->assertTrue($data != null);
 		$record = $request->get_bracket_data();
-		$this->assertTrue($record != null);
+		$record = $record[0];
+		$this->assertTrue(isset($record) && $record != null);
 		$this->assertObjectHasAttribute('division', $record);
 		$this->assertObjectHasAttribute('points', $record);
 		$this->assertObjectHasAttribute('division_rank', $record);
@@ -99,7 +101,6 @@ class SC2RanksTest extends PHPUnit_Framework_TestCase
 		$this->assertObjectHasAttribute('region_rank', $record);
 		$data_old = $data;
 		
-		global $request;
 		$data = $request->get_character_data("HuK", 530);
 		$this->assertTrue($request != null);
 		$this->assertTrue($data != null);
@@ -107,7 +108,16 @@ class SC2RanksTest extends PHPUnit_Framework_TestCase
 		$record = $request->get_bracket_data();
 		$this->assertNull($record);
 		$record_old = $request->get_bracket_data($data_old);
-		$this->assertTrue($record_old != null);
+		$this->assertTrue($record_old[0] != null);
+	}
+	*/
+	
+	public function testGetCharacterDataByBnet(){
+		// TODO
+	}
+	
+	public function testGetCharacterDataByProfile(){
+		// TODO
 	}
 }
 ?>

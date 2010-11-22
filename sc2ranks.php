@@ -66,6 +66,14 @@
 		private $profile_search_address = "http://sc2ranks.com/api/psearch/";
 		
 		/**
+		 * The base address for map requests
+		 * http://http://sc2ranks.com/api/map/
+		 * @access private
+		 * @var string
+		 */
+		private $map_request_address = "http://http://sc2ranks.com/api/map/";
+		
+		/**
 		 * Whether or not json errors are enabled, available in php 5.3.0
 		 * or greater.
 		 * @access private
@@ -89,6 +97,16 @@
 			if($version[0] >= 5 && $version[1] >= 3){
 				$this->json_errors_enabled = True;
 			}
+		}
+		
+		/**
+		 * Helper function to eliminate reptition of setting the last response
+		 * and the json_error and returning the object
+		 * @param object $response_object the thing to set as the last response
+		 * @return object either the response object or null if error
+		 */
+		private function set_and_ret($response_object){
+			
 		}
 		
 		/**
@@ -132,6 +150,41 @@
 		}
 		
 		/**
+		 * Gets map usage data from sc2ranks.com
+		 * @param int $map_id the map id to ge data for
+		 * @return object deserialized map usage info
+		 */
+		public function get_map_data($map_id){
+			$request_url = $this->$map_request_address.
+				rawurlencode($map_id).
+				".json?appKey=".$this->request_site_key;
+			$this->last_request = $request_url;
+			$response = file_get_contents($request_url);
+			$response_object = json_decode($response);
+			if ($this->json_errors_enabled){
+				$json_error = json_last_error();
+				if ($json_error == JSON_ERROR_NONE){
+					$this->last_json_error = $json_error;
+					$this->last_response = $response_object;
+					return $response_object;
+				} else {
+					$this->last_json_error = $json_error;
+					$this->last_response = null;
+					return null;
+				}
+			}
+			else {
+				if ($response_object == null){
+					$this->last_response = null;
+					return null;
+				} else {
+					$this->last_response = $response_object;
+					return $response_object;
+				}
+			}
+		}
+		
+		/**
 		 * Returns the deserialized character data object from the info
 		 * provided to the function.
 		 * @param string $name character name
@@ -140,8 +193,7 @@
 		 * @param string $type optional type information, defaults to 1v1 team
 		 * @param string $region optional region information, defaults to US
 		 * @return object the deserialized character data
-		 */		
-		
+		 */
 		public function get_character_data_by_profile($name, $subtype, $value, $type = "1t", $region = "us"){
 			$request_url = $this->profile_search_address.
 							rawurlencode($region)."/".
