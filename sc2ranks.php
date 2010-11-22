@@ -4,7 +4,7 @@
  * requests and pulling data back from the sc2ranks.com API. Uses the json
  * interface and the built in PHP json deserializer.
  * @author Ameer Ayoub <ameer.ayoub@gmail.com>
- * @version 0.2
+ * @version 0.3.1
  * @package sc2ranks
  */
  
