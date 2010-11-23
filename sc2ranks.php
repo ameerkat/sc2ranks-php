@@ -71,7 +71,7 @@
 		 * @access private
 		 * @var string
 		 */
-		private $map_request_address = "http://http://sc2ranks.com/api/map/";
+		private $map_request_address = "http://sc2ranks.com/api/map/";
 		
 		/**
 		 * Whether or not json errors are enabled, available in php 5.3.0
@@ -106,7 +106,27 @@
 		 * @return object either the response object or null if error
 		 */
 		private function set_and_ret($response_object){
-			
+			if ($this->json_errors_enabled){
+				$json_error = json_last_error();
+				if ($json_error == JSON_ERROR_NONE){
+					$this->last_json_error = $json_error;
+					$this->last_response = $response_object;
+					return $response_object;
+				} else {
+					$this->last_json_error = $json_error;
+					$this->last_response = null;
+					return null;
+				}
+			}
+			else {
+				if ($response_object == null){
+					$this->last_response = null;
+					return null;
+				} else {
+					$this->last_response = $response_object;
+					return $response_object;
+				}
+			}
 		}
 		
 		/**
@@ -126,27 +146,7 @@
 			$this->last_request = $request_url;
 			$response = file_get_contents($request_url);
 			$response_object = json_decode($response);
-			if ($this->json_errors_enabled){
-				$json_error = json_last_error();
-				if ($json_error == JSON_ERROR_NONE){
-					$this->last_json_error = $json_error;
-					$this->last_response = $response_object;
-					return $response_object;
-				} else {
-					$this->last_json_error = $json_error;
-					$this->last_response = null;
-					return null;
-				}
-			}
-			else {
-				if ($response_object == null){
-					$this->last_response = null;
-					return null;
-				} else {
-					$this->last_response = $response_object;
-					return $response_object;
-				}
-			}
+			return $this->set_and_ret($response_object);
 		}
 		
 		/**
@@ -155,33 +155,42 @@
 		 * @return object deserialized map usage info
 		 */
 		public function get_map_data($map_id){
-			$request_url = $this->$map_request_address.
+			$request_url = $this->map_request_address.
 				rawurlencode($map_id).
 				".json?appKey=".$this->request_site_key;
 			$this->last_request = $request_url;
 			$response = file_get_contents($request_url);
 			$response_object = json_decode($response);
-			if ($this->json_errors_enabled){
-				$json_error = json_last_error();
-				if ($json_error == JSON_ERROR_NONE){
-					$this->last_json_error = $json_error;
-					$this->last_response = $response_object;
-					return $response_object;
-				} else {
-					$this->last_json_error = $json_error;
-					$this->last_response = null;
+			return $this->set_and_ret($response_object);
+		}
+		
+		/**
+		 * Returns the latest map usage statistics
+		 * @param object $response_object optional response object, defaults
+				to the last valid response
+		 * @return $object the deserialized team ranking object
+		 */
+		public function get_latest_map_usage($response_object = null){
+			if($response_object == null){
+				if($this->last_response != null && isset($this->last_response->teams)){
+					// We shouldn't have team for map data so this is wrong
 					return null;
 				}
-			}
-			else {
-				if ($response_object == null){
-					$this->last_response = null;
-					return null;
-				} else {
-					$this->last_response = $response_object;
-					return $response_object;
+				else {
+					$response_object = $this->last_response;
 				}
 			}
+			if (isset($response_object->teams))
+				return null;
+			$latest_date = null;
+			$latest_date_value = 0;
+			foreach ($response_object as $date => $value){
+				if($date > $latest_date){
+					$latest_date = $date;
+					$latest_date_value = $value;
+				}
+			}
+			return array("date" => $latest_date, "value" => $latest_date_value);
 		}
 		
 		/**
@@ -205,27 +214,7 @@
 			$this->last_request = $request_url;
 			$response = file_get_contents($request_url);
 			$response_object = json_decode($response);
-			if ($this->json_errors_enabled){
-				$json_error = json_last_error();
-				if ($json_error == JSON_ERROR_NONE){
-					$this->last_json_error = $json_error;
-					$this->last_response = $response_object;
-					return $response_object;
-				} else {
-					$this->last_json_error = $json_error;
-					$this->last_response = null;
-					return null;
-				}
-			}
-			else {
-				if ($response_object == null){
-					$this->last_response = null;
-					return null;
-				} else {
-					$this->last_response = $response_object;
-					return $response_object;
-				}
-			}
+			return $this->set_and_ret($response_object);
 		}
 		
 		/**
@@ -245,29 +234,8 @@
 			$this->last_request = $request_url;
 			$response = file_get_contents($request_url);
 			$response_object = json_decode($response);
-			if ($this->json_errors_enabled){
-				$json_error = json_last_error();
-				if ($json_error == JSON_ERROR_NONE){
-					$this->last_json_error = $json_error;
-					$this->last_response = $response_object;
-					return $response_object;
-				} else {
-					$this->last_json_error = $json_error;
-					$this->last_response = null;
-					return null;
-				}
-			}
-			else {
-				if ($response_object == null){
-					$this->last_response = null;
-					return null;
-				} else {
-					$this->last_response = $response_object;
-					return $response_object;
-				}
-			}
-		}		
-				
+			return $this->set_and_ret($response_object);
+		}
 		
 		/**
 		 * Returns the team ranking object for a particular bracket.
@@ -280,7 +248,7 @@
 		public function get_bracket_data($response_object = null, $bracket = 1){
 			$returnArray = null;
 			if($response_object == null){
-				if($this->last_response != null){
+				if($this->last_response != null && isset($this->last_response->teams)){
 					$response_object = $this->last_response;
 				}
 				else {

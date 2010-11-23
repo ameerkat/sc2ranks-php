@@ -10,7 +10,7 @@
 	// Create a new request object
 	$request = new sc2ranks_request();
 	// Request character data for a sample player
-	echo "===\nPlayer Data: \n===\n";
+	echo "===\nPlayer Data (meerkat#678): \n===\n";
 	print_r($request->get_character_data("meerkat", 678));
 	// Get the bracket data for 1v1 for the last player queried
 	$bracket = $request->get_bracket_data();
@@ -19,6 +19,13 @@
 	// Get a particular attribute of the class
 	echo "\n===\nRatio: \n===\n";
 	print_r($bracket[0]->ratio);
+	// Get a map's data
+	echo "\n\n===\nMap Data (17525): \n===\n";
+	print_r($request->get_map_data(17525));
+	echo "\n\n===\nSorted Map Data: \n===\n";
+	print_r($request->get_sorted_map_data(17525));
+	echo "\n===\nGet Latest Map Usage Stats: \n===\n";
+	print_r($request->get_latest_map_usage());
 	
 	echo "</pre>";
 ?>

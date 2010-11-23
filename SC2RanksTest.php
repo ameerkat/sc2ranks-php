@@ -9,7 +9,6 @@ $request = new sc2ranks_request("github.com/ameerkat/sc2ranks-php");
 
 class SC2RanksTest extends PHPUnit_Framework_TestCase
 {	
-    /*
 	public function testGetCharacterData()
     {
 		global $request;
@@ -75,9 +74,7 @@ class SC2RanksTest extends PHPUnit_Framework_TestCase
 		if($request->is_json_last_error_enabled())
 			$this->assertEquals(JSON_ERROR_NONE);
     }
-	*/
 	
-	/*
 	public function testGetBracketData(){
 		global $request;
 		$data = $request->get_character_data("meerkat", 678);
@@ -110,7 +107,6 @@ class SC2RanksTest extends PHPUnit_Framework_TestCase
 		$record_old = $request->get_bracket_data($data_old);
 		$this->assertTrue($record_old[0] != null);
 	}
-	*/
 	
 	public function testGetCharacterDataByBnet(){
 		// TODO
