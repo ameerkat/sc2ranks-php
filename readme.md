@@ -9,7 +9,7 @@ See example.php for sample script
 2. Create a new request. You can pass in your app key if you want. If not then
 your app key will be set to the value of $_SERVER['server_name']. You can use
 either file_get_contents or curl by passing in a second parameters $method with
-either "fopen" or "curl", defaults to "fopen".
+either "fopen" or "curl", defaults to "fopen". 
 
 	$request = new sc2ranks_request( _"your site name"_, "fopen");
 
