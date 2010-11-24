@@ -83,19 +83,63 @@
 		private $json_errors_enabled = False;
 		
 		/**
+		 * Method of url grabbing
+		 * fopen or curl, defaults to fopen
+		 */
+		private $request_method = "fopen";
+		private $curl_inst = null;
+		private $curl_timeout = 5;
+		
+		/**
 		 * Constructor
 		 * @param string $sitekey optional sitekey to use with request,
-				defaults to the value of $_SERVER['SERVER_NAME'].
+		 *		defaults to the value of $_SERVER['SERVER_NAME'].
+		 * @param string $method the method to grab url contents, eiher
+		 * 		curl or fopen (for file_get_contents).
 		 */
-		function __construct($site_key = null){
+		function __construct($site_key = null, $method = "fopen"){
 			if($site_key){
 				$this->request_site_key = rawurlencode($site_key);
 			} else {
 				$this->request_site_key = rawurlencode($_SERVER['SERVER_NAME']);
 			}
+			$this->request_method = $method;
 			$version = explode('.', phpversion());
 			if($version[0] >= 5 && $version[1] >= 3){
 				$this->json_errors_enabled = True;
+			}
+		}
+		
+		/**
+		 * Destructor
+		 * Just cleans up the cURL session if we used it
+		 */
+		function __destruct(){
+			if($this->curl_inst)
+				curl_close($this->curl_inst);
+		}
+		
+		/**
+		 * Generic get contents method to use either curl or file_get_contents
+		 * @param string $request_url url of the file to get contents of
+		 * @return string the string contents of the file/url given as param
+		 */
+		private function get_contents($request_url){
+			if ($this->request_method == "fopen"){
+				return file_get_contents($request_url);
+			} else if ($this->request_method = "curl"){
+				if(!$this->curl_inst){
+					$this->curl_inst = curl_init();
+					curl_setopt ($this->curl_inst, CURLOPT_RETURNTRANSFER, 1);
+					curl_setopt ($this->curl_inst, CURLOPT_HEADER, 0);
+					curl_setopt ($this->curl_inst, CURLOPT_CONNECTTIMEOUT, $this->curl_timeout);
+				}
+				curl_setopt ($this->curl_inst, CURLOPT_URL, $request_url);
+				return curl_exec($this->curl_inst);
+			} else {
+				// Invalid request method
+				trigger_error("Request method must be one of fopen or curl");
+				return null;
 			}
 		}
 		
@@ -144,7 +188,7 @@
 							rawurlencode($code).
 							".json?appKey=".$this->request_site_key;
 			$this->last_request = $request_url;
-			$response = file_get_contents($request_url);
+			$response = $this->get_contents($request_url);
 			$response_object = json_decode($response);
 			return $this->set_and_ret($response_object);
 		}
@@ -159,7 +203,7 @@
 				rawurlencode($map_id).
 				".json?appKey=".$this->request_site_key;
 			$this->last_request = $request_url;
-			$response = file_get_contents($request_url);
+			$response = $this->get_contents($request_url);
 			$response_object = json_decode($response);
 			return $this->set_and_ret($response_object);
 		}
@@ -212,7 +256,7 @@
 							rawurlencode($value).
 							".json?appKey=".$this->request_site_key;
 			$this->last_request = $request_url;
-			$response = file_get_contents($request_url);
+			$response = $this->get_contents($request_url);
 			$response_object = json_decode($response);
 			return $this->set_and_ret($response_object);
 		}
@@ -232,7 +276,7 @@
 							rawurlencode($bnet).
 							".json?appKey=".$this->request_site_key;
 			$this->last_request = $request_url;
-			$response = file_get_contents($request_url);
+			$response = $this->get_contents($request_url);
 			$response_object = json_decode($response);
 			return $this->set_and_ret($response_object);
 		}
