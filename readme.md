@@ -10,18 +10,18 @@ See example.php for sample script
 your app key will be set to the value of $_SERVER['server_name']. You can use
 either file_get_contents or curl by passing in a second parameters $method with
 either "fopen" or "curl", defaults to "fopen".
-	
+
 	$request = new sc2ranks_request( _"your site name"_, "fopen");
-	
+
 or just 
 
 	$request = new sc2ranks_request();
-	
+
 3. Call the get_character_data method of the request object, passing in the
 character name and character code.
 
 	$request->get_character_data( _"character name"_, _character code_);
-	
+
 4. Call get_bracket_data() to get an object containing a particular bracket
 record, defaulting to the 1v1 record of the last requested character.
 
