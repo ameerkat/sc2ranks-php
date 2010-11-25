@@ -4,7 +4,7 @@
  * requests and pulling data back from the sc2ranks.com API. Uses the json
  * interface and the built in PHP json deserializer.
  * @author Ameer Ayoub <ameer.ayoub@gmail.com>
- * @version 0.3.1
+ * @version 0.3.3
  * @package sc2ranks
  */
  
@@ -92,7 +92,7 @@
 		
 		/**
 		 * Constructor
-		 * @param string $sitekey optional sitekey to use with request,
+		 * @param string $site_key optional sitekey to use with request,
 		 *		defaults to the value of $_SERVER['SERVER_NAME'].
 		 * @param string $method the method to grab url contents, eiher
 		 * 		curl or fopen (for file_get_contents).
@@ -195,7 +195,7 @@
 		
 		/**
 		 * Gets map usage data from sc2ranks.com
-		 * @param int $map_id the map id to ge data for
+		 * @param int $map_id the map id to get data for
 		 * @return object deserialized map usage info
 		 */
 		public function get_map_data($map_id){
@@ -287,7 +287,7 @@
 				to the last valid response
 		 * @param int $bracket optional bracket number, defaults to 1, a bracket
 				of 1 will return 1v1 team record, 2 will return 2v2, etc.
-		 * @return $object the deserialized team ranking object
+		 * @return object the deserialized team ranking object
 		 */
 		public function get_bracket_data($response_object = null, $bracket = 1){
 			$returnArray = null;

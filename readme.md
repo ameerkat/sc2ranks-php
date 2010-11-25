@@ -2,7 +2,7 @@
 ## Description
 A Simple PHP API for accessing data from [sc2ranks](http://www.sc2ranks.com/). Still needs some work, let me know if you have any contributions to this project.
 
-## Usage
+## Basic Usage
 See example.php for sample script
 
 1. Include sc2ranks.php
@@ -21,10 +21,10 @@ character name and character code
 4. Call get_bracket_data() to get an object containing a particular bracket
 record, defaulting to the 1v1 record of the last requested character 
 	    $request->get_bracket_data();
-
+		
 ## TODO
 * Add documentation for the new merged functions
 * Add support for batch requests
 * Add other helper functions for processing returned data
 * Add documentation somewhere for the returned object structure
-* Unit Tests w/phpUnit
+* Add sorted map statistics methods
