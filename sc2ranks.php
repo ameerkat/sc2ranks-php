@@ -212,7 +212,7 @@
 		 * Returns the latest map usage statistics
 		 * @param object $response_object optional response object, defaults
 				to the last valid response
-		 * @return $object the deserialized team ranking object
+		 * @return object the deserialized team ranking object
 		 */
 		public function get_latest_map_usage($response_object = null){
 			if($response_object == null){
@@ -235,6 +235,33 @@
 				}
 			}
 			return array("date" => $latest_date, "value" => $latest_date_value);
+		}
+		
+		/**
+		 * Returns the total map usage statistics
+		 * @param object $response_object optional response object, defaults to
+		 *		the last response, if the response isn't a map request then
+		 *		the function returns null, so you'll need to pass the proper
+		 *		response object for the map request you made.
+		 * @return integer the total number of games played on this map
+		 */
+		public function get_total_map_usage($response_object = null){
+			if($response_object == null){
+				if($this->last_response != null && isset($this->last_response->teams)){
+					// We shouldn't have team for map data so this is wrong
+					return null;
+				}
+				else {
+					$response_object = $this->last_response;
+				}
+			}
+			if (isset($response_object->teams))
+				return null;
+			$total = 0;
+			foreach ($response_object as $value){
+				$total += $value;
+			}
+			return $total;
 		}
 		
 		/**

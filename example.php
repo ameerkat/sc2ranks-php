@@ -26,6 +26,8 @@
 	print_r($request->get_map_data(17525));
 	echo "\n===\nGet Latest Map Usage Stats: \n===\n";
 	print_r($request->get_latest_map_usage());
+	echo "\n===\nGet Total Map Usage Stats: \n===\n";
+	print_r($request->get_total_map_usage());
 	//echo "\n\n===\nSorted Map Data: \n===\n";
 	//print_r($request->get_sorted_map_data(17525));
 	

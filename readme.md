@@ -23,8 +23,8 @@ record, defaulting to the 1v1 record of the last requested character
 	    $request->get_bracket_data();
 		
 ## TODO
-* Add documentation for the new merged functions
 * Add support for batch requests
+* Add demo of new functions
 * Add other helper functions for processing returned data
 * Add documentation somewhere for the returned object structure
 * Add sorted map statistics methods
